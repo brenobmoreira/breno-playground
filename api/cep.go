@@ -1,4 +1,4 @@
-package main
+package http
 
 import (
 	"fmt"
@@ -6,12 +6,7 @@ import (
 	"net/http"
 )
 
-func main() {
-
-	var cep string
-
-	fmt.Println("Enter your CEP: ")
-	fmt.Scanln(&cep)
+func Cep(cep string) (string, error) {
 
 	url := "https://viacep.com.br/ws/" + cep + "/json/"
 
@@ -33,6 +28,6 @@ func main() {
 
 	bodyString := string(bodyBites)
 
-	fmt.Println(bodyString)
+	return bodyString, err
 
 }

@@ -3,9 +3,19 @@ package main
 import (
 	"fmt"
 
-	"rsc.io/quote"
+	"github.com/brenobmoreira/breno-playground/http"
 )
 
 func main() {
-	fmt.Println(quote.Go())
+
+	var cep string
+	fmt.Println("Digite seu CEP: ")
+	fmt.Scanln(&cep)
+	cepBody, err = http.Cep(cep)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(cepBody)
 }
