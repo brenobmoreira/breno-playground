@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"os"
 	"time"
 
 	"github.com/jlaffaye/ftp"
@@ -38,20 +39,33 @@ func main() {
 		log.Fatal(err)
 	}
 
-	read, err := resp.Retr("/dissemin/publicos/CNES/200508_/Dados/EQ/STSC2404.dbc")
+	read, err := resp.Retr("/dissemin/publicos/CNES/200508_/Dados/ST/STSC2403.dbc")
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	archive, err := os.Create("teste.dbc")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = io.Copy(archive, read)
+
+	defer archive.Close()
 	defer read.Close()
 
-	buf, err := io.ReadAll(read)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(buf))
 
-	if err := resp.Quit(); err != nil {
-		log.Fatal(err)
-	}
+	// buf, err := io.ReadAll(read)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// fmt.Println(string(buf))
+
+	// if err := resp.Quit(); err != nil {
+	// 	log.Fatal(err)
+	// }
 }
