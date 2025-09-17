@@ -44,7 +44,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	archive, err := os.Create("teste.dbc")
+	archive, err := os.Create("api/ftp/teste.dbc")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,14 +58,4 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// buf, err := io.ReadAll(read)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// fmt.Println(string(buf))
-
-	// if err := resp.Quit(); err != nil {
-	// 	log.Fatal(err)
-	// }
 }
