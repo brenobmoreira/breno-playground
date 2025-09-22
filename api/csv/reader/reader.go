@@ -1,4 +1,4 @@
-package main
+package reader
 
 import (
 	"encoding/csv"
@@ -7,8 +7,8 @@ import (
 	"os"
 )
 
-func main() {
-	file, err := os.Open("output/EQSC2506.csv")
+func ReadCsv(path string) error {
+	file, err := os.Open(path)
 	if err != nil {
 		panic(err)
 	}
@@ -27,4 +27,6 @@ func main() {
 		}
 		fmt.Println(record)
 	}
+
+	return err
 }

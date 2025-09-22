@@ -3,12 +3,12 @@ module github.com/brenobmoreira/breno-playground
 go 1.25.1
 
 require (
+	github.com/Valentin-Kaiser/go-dbase v1.12.10
 	github.com/gin-gonic/gin v1.10.1
 	github.com/jlaffaye/ftp v0.2.0
 )
 
 require (
-	github.com/Valentin-Kaiser/go-dbase v1.12.10 // indirect
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
