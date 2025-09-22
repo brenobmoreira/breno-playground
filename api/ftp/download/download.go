@@ -39,7 +39,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	read, err := resp.Retr("/dissemin/publicos/CNES/200508_/Dados/ST/STSC2403.dbc")
+	read, err := resp.Retr("/dissemin/publicos/CNES/200508_/Dados/ST/STSC2506.dbc")
 	if err != nil {
 		log.Fatal(err)
 	}
