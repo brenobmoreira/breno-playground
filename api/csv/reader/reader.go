@@ -17,7 +17,7 @@ func ReadCsv(path string) ([][]string, error) {
 	var records [][]string
 	r := csv.NewReader(file)
 
-	for i := 0; i < 5; i++ {
+	for {
 		record, err := r.Read()
 		if err == io.EOF {
 			break
