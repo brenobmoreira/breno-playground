@@ -1,29 +1,35 @@
-package main
+package writer
 
 import (
 	"encoding/csv"
 	"os"
+	"path/filepath"
 )
 
-func main() {
-	file, err := os.Create("api/csv/writer/archive.csv")
+func WriteCsv(records [][]string, path string) error {
+	// Create directory if it doesn't exist
+	dir := filepath.Dir(path)
+	if dir != "." {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			return err
+		}
+	}
+
+	file, err := os.Create(path)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	defer file.Close()
 
-	records := [][]string{
-		{"Breno Moreira", "blabla@gmail.com"},
-		{"Celso Russomano", "blabla2@gmail.com"},
-	}
-
-	writer := csv.NewWriter(file)
-	defer writer.Flush()
+	w := csv.NewWriter(file)
+	defer w.Flush()
 
 	for _, record := range records {
-		if err := writer.Write(record); err != nil {
-			panic(err)
+		if err := w.Write(record); err != nil {
+			return err
 		}
 	}
+
+	return err
 }

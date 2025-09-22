@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/brenobmoreira/breno-playground/api/csv/reader"
+	"github.com/brenobmoreira/breno-playground/api/csv/writer"
 )
 
 func main() {
@@ -18,4 +19,12 @@ func main() {
 		fmt.Println("--  Linha", i, " --")
 		fmt.Println(records[i])
 	}
+
+	output := "api/csv/output/file.csv"
+	err = writer.WriteCsv(records, output)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Sucessufully wrote %s\n", output)
+
 }
