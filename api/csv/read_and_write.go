@@ -9,8 +9,13 @@ import (
 func main() {
 	path := "output/EQSC2506.csv"
 
-	err := reader.ReadCsv(path)
+	records, err := reader.ReadCsv(path)
 	if err != nil {
 		fmt.Printf("Error reading CSV: %v\n", err)
+	}
+
+	for i := range records {
+		fmt.Println("--  Linha", i, " --")
+		fmt.Println(records[i])
 	}
 }

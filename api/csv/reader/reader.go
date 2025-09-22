@@ -2,12 +2,11 @@ package reader
 
 import (
 	"encoding/csv"
-	"fmt"
 	"io"
 	"os"
 )
 
-func ReadCsv(path string) error {
+func ReadCsv(path string) ([][]string, error) {
 	file, err := os.Open(path)
 	if err != nil {
 		panic(err)
@@ -15,6 +14,7 @@ func ReadCsv(path string) error {
 
 	defer file.Close()
 
+	var records [][]string
 	r := csv.NewReader(file)
 
 	for i := 0; i < 5; i++ {
@@ -25,8 +25,11 @@ func ReadCsv(path string) error {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println(record)
+
+		records = append(records, record)
+
+		// fmt.Println(record)
 	}
 
-	return err
+	return records, err
 }
