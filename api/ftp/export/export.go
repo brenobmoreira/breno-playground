@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os/exec"
 
 	"github.com/Valentin-Kaiser/go-dbase/dbase"
 )
@@ -34,9 +35,17 @@ func (e EstabelecimentoDBF) ToEstabelecimento() Estabelecimento {
 }
 
 func main() {
+	dbc_path := "/home/dev/playground/breno-playground/api/ftp/export/teste.dbc"
+	dbf_path := "/home/dev/playground/breno-playground/api/ftp/export/teste.dbf"
+	blast := "./blast-dbf"
+	err := DBCtoDBF(dbc_path, dbf_path, blast)
+	if err != nil {
+		panic(err)
+	}
 
-	path := "/home/dev/playground/breno-playground/api/ftp/export/teste.dbf"
-	table, err := ReadDbf(path)
+	fmt.Println("Successfully converted .dbc to .dbf")
+
+	table, err := ReadDbf(dbf_path)
 	if err != nil {
 		panic(err)
 	}
@@ -86,4 +95,16 @@ func RowToStruct(row *dbase.Row) (EstabelecimentoDBF, error) {
 	}
 
 	return *p, nil
+}
+
+func DBCtoDBF(dbc string, dbf string, blast string) error {
+	cmd := exec.Command(blast, dbc, dbf)
+	cmd.Dir = "/home/dev/playground/breno-playground/api/ftp/export/"
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("Error running blast-dbf: %v\nOutput: %s\n", err, string(output))
+		return err
+	}
+
+	return err
 }
