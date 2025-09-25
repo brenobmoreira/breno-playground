@@ -6,15 +6,36 @@ import (
 	"github.com/Valentin-Kaiser/go-dbase/dbase"
 )
 
-type Estabelecimento struct {
+type EstabelecimentoDBF struct {
 	ID              string `dbase:"CNES"`
 	CodigoMunicipio string `dbase:"CODUFMUN"`
 	CodigoCEP       string `dbase:"COD_CEP"`
 	CPFouCNPJ       string `dbase:"CPF_CNPJ"`
 }
 
+type Estabelecimento struct {
+	Cidade string
+	Estado string
+}
+
+func (e EstabelecimentoDBF) ToEstabelecimento() Estabelecimento {
+	var Estado string
+	var Cidade string
+
+	if e.CodigoCEP == "420005" {
+		Estado = "Santa Catarina"
+		Cidade = "Florianopolis"
+	}
+
+	return Estabelecimento{
+		Cidade: Cidade,
+		Estado: Estado,
+	}
+}
+
 func main() {
-	path := "/home/dev/playground/breno-playground/api/ftp/export/output.dbf"
+
+	path := "/home/dev/playground/breno-playground/api/ftp/export/teste.dbf"
 	table, err := ReadDbf(path)
 	if err != nil {
 		panic(err)
@@ -40,8 +61,7 @@ func main() {
 			fmt.Printf("Error in row: %d, %v", line, err)
 			continue
 		}
-
-		fmt.Printf("Estabelecimento: %+v \n", p)
+		fmt.Printf("EstabelecimentoDBF: %+v \n", p.ToEstabelecimento())
 	}
 }
 
@@ -58,11 +78,11 @@ func ReadDbf(path string) (*dbase.File, error) {
 	return table, nil
 }
 
-func RowToStruct(row *dbase.Row) (Estabelecimento, error) {
-	p := &Estabelecimento{}
+func RowToStruct(row *dbase.Row) (EstabelecimentoDBF, error) {
+	p := &EstabelecimentoDBF{}
 	err := row.ToStruct(p)
 	if err != nil {
-		return Estabelecimento{}, err
+		return EstabelecimentoDBF{}, err
 	}
 
 	return *p, nil
