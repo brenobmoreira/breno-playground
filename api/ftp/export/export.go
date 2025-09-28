@@ -37,11 +37,6 @@ func (e EstabelecimentoDBF) ToEstabelecimento() Estabelecimento {
 	}
 }
 
-func ReadChan(test chan []string) {
-	fmt.Println("Testing how works")
-	fmt.Println(<-test)
-}
-
 func main() {
 	dbc_path := "/home/dev/playground/breno-playground/api/ftp/export/teste.dbc"
 	dbf_path := "/home/dev/playground/breno-playground/api/ftp/export/teste.dbf"
@@ -58,9 +53,6 @@ func main() {
 	}
 	defer table.Close()
 
-	var line uint32
-	// var estabString [][]string
-
 	path := "/home/dev/playground/breno-playground/api/ftp/write.csv"
 	directory := filepath.Dir(path)
 	if directory != "." {
@@ -68,13 +60,13 @@ func main() {
 			panic(err)
 		}
 	}
-
 	file, err := os.Create(path)
 	if err != nil {
 		panic(err)
 	}
-
 	defer file.Close()
+
+	var line uint32
 
 	for !table.EOF() {
 		line++
@@ -94,37 +86,24 @@ func main() {
 			continue
 		}
 
-		data := []string{
-			p.ID,
-			p.CodigoMunicipio,
-			p.CodigoCEP,
-			p.CPFouCNPJ,
-		}
+		estabChan := make(chan EstabelecimentoDBF)
+		go WriteChan(file, estabChan)
+		estabChan <- p
 
-		test := make(chan []string)
-		// go ReadChan(test)
-		go WriteChan(file, test)
-		test <- data
-
-		// estabString = append(estabString, data)
-
-		// fmt.Printf("EstabelecimentoDBF: %+v \n", p)
+		fmt.Printf("EstabelecimentoDBF: %+v \n", p)
 
 	}
-
-	// output := "/home/dev/playground/breno-playground/api/ftp/write.csv"
-	// err = writer.WriteCsv(estabString, output)
-	// if err != nil {
-	// 	panic(err)
-	// }
 }
 
-func WriteChan(file *os.File, data chan []string) {
+func WriteChan(file *os.File, data chan EstabelecimentoDBF) {
 	w := csv.NewWriter(file)
 	defer w.Flush()
-
-	record := <-data
-
+	r := <-data
+	record := []string{
+		r.ID,
+		r.CodigoMunicipio,
+		r.CodigoCEP,
+		r.CPFouCNPJ}
 	if err := w.Write(record); err != nil {
 		panic(err)
 	}
