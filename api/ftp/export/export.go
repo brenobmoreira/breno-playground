@@ -35,6 +35,11 @@ func (e EstabelecimentoDBF) ToEstabelecimento() Estabelecimento {
 	}
 }
 
+func ReadChan(test chan []string) {
+	fmt.Println("Testing how works")
+	fmt.Println(<-test)
+}
+
 func main() {
 	dbc_path := "/home/dev/playground/breno-playground/api/ftp/export/teste.dbc"
 	dbf_path := "/home/dev/playground/breno-playground/api/ftp/export/teste.dbf"
@@ -79,9 +84,13 @@ func main() {
 			p.CPFouCNPJ,
 		}
 
+		test := make(chan []string)
+		go ReadChan(test)
+		test <- data
+
 		estabString = append(estabString, data)
 
-		fmt.Printf("EstabelecimentoDBF: %+v \n", p)
+		// fmt.Printf("EstabelecimentoDBF: %+v \n", p)
 
 	}
 
