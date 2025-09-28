@@ -68,6 +68,9 @@ func main() {
 
 	var line uint32
 
+	estabChan := make(chan EstabelecimentoDBF)
+	go WriteChan(file, estabChan)
+
 	for !table.EOF() {
 		line++
 		row, err := table.Next()
@@ -86,28 +89,28 @@ func main() {
 			continue
 		}
 
-		estabChan := make(chan EstabelecimentoDBF)
-		go WriteChan(file, estabChan)
 		estabChan <- p
 
-		fmt.Printf("EstabelecimentoDBF: %+v \n", p)
+		// fmt.Printf("EstabelecimentoDBF: %+v \n", p)
 
 	}
 }
 
-func WriteChan(file *os.File, data chan EstabelecimentoDBF) {
+func WriteChan(file *os.File, estabChan chan EstabelecimentoDBF) {
 	w := csv.NewWriter(file)
-	defer w.Flush()
-	r := <-data
-	record := []string{
-		r.ID,
-		r.CodigoMunicipio,
-		r.CodigoCEP,
-		r.CPFouCNPJ}
-	if err := w.Write(record); err != nil {
-		panic(err)
+	for range estabChan {
+		r := <-estabChan
+		record := []string{
+			r.ID,
+			r.CodigoMunicipio,
+			r.CodigoCEP,
+			r.CPFouCNPJ}
+		if err := w.Write(record); err != nil {
+			panic(err)
+		}
+		fmt.Println(record)
 	}
-	fmt.Println(record)
+	defer w.Flush()
 }
 
 func ReadDbf(path string) (*dbase.File, error) {
