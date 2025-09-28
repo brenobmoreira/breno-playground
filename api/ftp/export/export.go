@@ -1,11 +1,13 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
+	"os"
 	"os/exec"
+	"path/filepath"
 
 	"github.com/Valentin-Kaiser/go-dbase/dbase"
-	"github.com/brenobmoreira/breno-playground/api/csv/writer"
 )
 
 type EstabelecimentoDBF struct {
@@ -57,7 +59,22 @@ func main() {
 	defer table.Close()
 
 	var line uint32
-	var estabString [][]string
+	// var estabString [][]string
+
+	path := "/home/dev/playground/breno-playground/api/ftp/write.csv"
+	directory := filepath.Dir(path)
+	if directory != "." {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			panic(err)
+		}
+	}
+
+	file, err := os.Create(path)
+	if err != nil {
+		panic(err)
+	}
+
+	defer file.Close()
 
 	for !table.EOF() {
 		line++
@@ -85,20 +102,33 @@ func main() {
 		}
 
 		test := make(chan []string)
-		go ReadChan(test)
+		// go ReadChan(test)
+		go WriteChan(file, test)
 		test <- data
 
-		estabString = append(estabString, data)
+		// estabString = append(estabString, data)
 
 		// fmt.Printf("EstabelecimentoDBF: %+v \n", p)
 
 	}
 
-	output := "/home/dev/playground/breno-playground/api/ftp/write.csv"
-	err = writer.WriteCsv(estabString, output)
-	if err != nil {
+	// output := "/home/dev/playground/breno-playground/api/ftp/write.csv"
+	// err = writer.WriteCsv(estabString, output)
+	// if err != nil {
+	// 	panic(err)
+	// }
+}
+
+func WriteChan(file *os.File, data chan []string) {
+	w := csv.NewWriter(file)
+	defer w.Flush()
+
+	record := <-data
+
+	if err := w.Write(record); err != nil {
 		panic(err)
 	}
+	fmt.Println(record)
 }
 
 func ReadDbf(path string) (*dbase.File, error) {
