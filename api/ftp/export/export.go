@@ -5,6 +5,7 @@ import (
 	"os/exec"
 
 	"github.com/Valentin-Kaiser/go-dbase/dbase"
+	"github.com/brenobmoreira/breno-playground/api/csv/writer"
 )
 
 type EstabelecimentoDBF struct {
@@ -51,6 +52,7 @@ func main() {
 	defer table.Close()
 
 	var line uint32
+	var estabString [][]string
 
 	for !table.EOF() {
 		line++
@@ -69,7 +71,24 @@ func main() {
 			fmt.Printf("Error in row: %d, %v", line, err)
 			continue
 		}
-		fmt.Printf("EstabelecimentoDBF: %+v \n", p.ToEstabelecimento())
+
+		data := []string{
+			p.ID,
+			p.CodigoMunicipio,
+			p.CodigoCEP,
+			p.CPFouCNPJ,
+		}
+
+		estabString = append(estabString, data)
+
+		fmt.Printf("EstabelecimentoDBF: %+v \n", p)
+
+	}
+
+	output := "/home/dev/playground/breno-playground/api/ftp/write.csv"
+	err = writer.WriteCsv(estabString, output)
+	if err != nil {
+		panic(err)
 	}
 }
 
