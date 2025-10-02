@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -23,26 +22,27 @@ func main() {
 		{UF: "SC", Ano: "25", Mes: "03"},
 	}
 
-	for i := range infos {
-		fmt.Println(infos[i])
-	}
-
 	path := "ftp.datasus.gov.br:21"
 	login, password := "anonymous", "anonymous"
-
 	resp, err := ConnectFtp(path, login, password)
 	if err != nil {
 		panic(err)
 	}
 
-	ftp_path := "/dissemin/publicos/CNES/200508_/Dados/ST/STSC2506.dbc"
-	download_path := "api/ftp/archives/"
-	name := "teste.dbc"
-	err = ReadAndDownload(resp, download_path, name, ftp_path)
-	if err != nil {
-		panic(err)
+	st_eq := []string{"ST", "EQ"}
+	for i := range st_eq {
+		cadastro := st_eq[i]
+		download := "data/" + cadastro + "/"
+		initial := "/dissemin/publicos/CNES/200508_/Dados/" + cadastro + "/"
+		for j := range infos {
+			archive_name := cadastro + infos[j].UF + infos[j].Ano + infos[j].Mes + ".dbc"
+			ftp_path := initial + archive_name
+			err = ReadAndDownload(resp, download, archive_name, ftp_path)
+			if err != nil {
+				panic(err)
+			}
+		}
 	}
-
 }
 
 func ConnectFtp(path string, login string, password string) (response *ftp.ServerConn, err error) {
@@ -66,7 +66,6 @@ func ReadAndDownload(resp *ftp.ServerConn, download_path string, name string, ft
 	}
 
 	_, err = os.Stat(download_path)
-	fmt.Println(err)
 	if err != nil {
 		err = os.MkdirAll(download_path, os.ModePerm)
 		if err != nil {
