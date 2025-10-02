@@ -1,4 +1,4 @@
-package main
+package api
 
 import (
 	"io"
@@ -15,7 +15,7 @@ type info struct {
 	Mes string `json:"mes"`
 }
 
-func main() {
+func DownloadDBC() error {
 	var infos = []info{
 		{UF: "SC", Ano: "25", Mes: "05"},
 		{UF: "SC", Ano: "25", Mes: "04"},
@@ -43,6 +43,8 @@ func main() {
 			}
 		}
 	}
+
+	return nil
 }
 
 func ConnectFtp(path string, login string, password string) (response *ftp.ServerConn, err error) {
