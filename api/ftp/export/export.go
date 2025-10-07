@@ -98,8 +98,7 @@ func main() {
 
 func WriteChan(file *os.File, estabChan chan EstabelecimentoDBF) {
 	w := csv.NewWriter(file)
-	for range estabChan {
-		r := <-estabChan
+	for r := range estabChan {
 		record := []string{
 			r.ID,
 			r.CodigoMunicipio,
