@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	var categoria = functions.Categoria{ID: 1, Nome: "Breno"}
+	var categoria = functions.Categoria{Nome: "Breno"}
 
 	id, err := functions.Insert(categoria)
 	if err != nil {
@@ -19,5 +19,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Print(cat)
+	fmt.Println(cat)
+
+	sc, err := functions.GetAll()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(sc)
 }

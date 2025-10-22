@@ -49,3 +49,30 @@ func Get(id int64) (c Categoria, err error) {
 
 	return
 }
+
+func GetAll() (sc []Categoria, err error) {
+	conn, err := OpenConn()
+	if err != nil {
+		return
+	}
+	defer conn.Close()
+
+	rows, err := conn.Query(`SELECT * FROM categorias`)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var c Categoria
+
+		err = rows.Scan(&c.ID, &c.Nome)
+		if err != nil {
+			continue
+		}
+
+		sc = append(sc, c)
+	}
+
+	return
+}
