@@ -8,22 +8,44 @@ import (
 
 func main() {
 
-	var categoria = functions.Categoria{Nome: "Breno"}
+	var categoria = []functions.Categoria{
+		{Nome: "Breno"},
+		{Nome: "Felipe"},
+		{Nome: "Jose"},
+	}
 
-	id, err := functions.Insert(categoria)
+	var lista_ids = []int64{}
+
+	for name := range categoria {
+		id, err := functions.Insert(categoria[name])
+		if err != nil {
+			panic(err)
+		}
+		lista_ids = append(lista_ids, id)
+	}
+
+	cat, err := functions.Get(lista_ids[0])
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("Select id[0]: ", cat)
 
-	cat, err := functions.Get(id)
+	categoria_update := functions.Categoria{Nome: "Joao"}
+	updated, err := functions.Update(lista_ids[0], categoria_update)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(cat)
+	fmt.Println("Row updated: ", updated)
+
+	deleted, err := functions.Delete(lista_ids[1])
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Row deleted: ", deleted)
 
 	sc, err := functions.GetAll()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(sc)
+	fmt.Println("Select all ids: ", sc)
 }

@@ -76,3 +76,33 @@ func GetAll() (sc []Categoria, err error) {
 
 	return
 }
+
+func Update(id int64, c Categoria) (int64, error) {
+	conn, err := OpenConn()
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
+	res, err := conn.Exec(`UPDATE categorias SET nome=$2 WHERE id=$1`, id, c.Nome)
+	if err != nil {
+		panic(err)
+	}
+
+	return res.RowsAffected()
+}
+
+func Delete(id int64) (int64, error) {
+	conn, err := OpenConn()
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
+	res, err := conn.Exec(`DELETE FROM categorias WHERE id=$1`, id)
+	if err != nil {
+		panic(err)
+	}
+
+	return res.RowsAffected()
+}
