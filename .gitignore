@@ -2,3 +2,4 @@
 *.csv
 *.dbf
 *.dbc
+*env
