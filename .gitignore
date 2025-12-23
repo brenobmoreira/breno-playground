@@ -3,3 +3,4 @@
 *.dbf
 *.dbc
 *env
+__pycache__
