@@ -4,6 +4,9 @@ from models import Item
 def get_item(db: Session, item_id: int):
     return db.query(Item).filter(Item.id == item_id).first()
 
+def get_all_items(db: Session):
+    return db.query(Item).filter(Item.id).all()
+
 def create_item(db: Session, name: str, description: str, price: int):
     db_item = Item(name=name, description=description, price=price)
     db.add(db_item)

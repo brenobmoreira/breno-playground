@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 from models import Base, Item
-from crud import get_item, create_item
+from crud import get_item, create_item, get_all_items
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -39,6 +39,14 @@ async def get_item_endpoint(item_id: int, db: Session = Depends(get_db)):
     if item is None:
         raise HTTPException(status_code=404, detail="Item not found")
     return item
+
+
+@app.get("/items/")
+async def get_all_items_endpoint(db: Session = Depends(get_db)):
+    items = get_all_items(db)
+    if items is None:
+        raise HTTPException(status_code=404, detail="Items not found")
+    return items
 
 
 @app.put("/items/{item_id}")
