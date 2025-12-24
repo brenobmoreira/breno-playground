@@ -3,8 +3,21 @@ from sqlalchemy.orm import Session
 from database import SessionLocal, engine
 from models import Base, Item
 from crud import get_item, create_item
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 Base.metadata.create_all(bind=engine)
 
