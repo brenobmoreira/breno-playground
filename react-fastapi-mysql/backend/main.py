@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
-from models import Base, Item
+from models import Base, Item, BaseModel, ItemCreate
 from crud import get_item, create_item, get_all_items
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -29,8 +29,8 @@ def get_db():
         db.close()
 
 @app.post("/items/")
-async def create_item_endpoint(name: str, description: str, price: int, db: Session = Depends(get_db)):
-    return create_item(db, name, description, price)
+async def create_item_endpoint(item: ItemCreate, db: Session = Depends(get_db)):
+    return create_item(db, item.name, item.description, item.price)
 
 
 @app.get("/items/{item_id}")
